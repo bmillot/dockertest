@@ -2,8 +2,19 @@ FROM debian:jessie
 
 MAINTAINER Bertrand Millot <bmillot@20minutes.fr>
 
+# Install wget
 RUN apt-get update \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y -q apache2 php5 libapache2-mod-php5 php5-intl php5-curl php5-mysql php5-redis
+    && apt-get install -y -q wget
+
+# Update apt sources.list with dotdeb repo
+RUN echo "deb http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
+    && echo "deb-src http://packages.dotdeb.org jessie all" >> /etc/apt/sources.list \
+    && wget https://www.dotdeb.org/dotdeb.gpg \
+    && apt-key add dotdeb.gpg
+
+# Install Apache 2.4 + PHP7
+RUN apt-get update \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y -q apache2 php7.0 libapache2-mod-php7.0 php7.0-intl php7.0-curl php7.0-mysql php7.0-redis
 
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
