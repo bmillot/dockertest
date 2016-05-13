@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker-machine create --driver amazonec2 --amazonec2-region eu-central-1 aws-sandbox
+docker-machine create --driver amazonec2 --amazonec2-region eu-west-1 aws-sandbox
 eval "$(docker-machine env aws-sandbox)"
 docker run --name mysql -e MYSQL_ROOT_PASSWORD=password -d mysql:latest
 docker run --name elasticsearch -d elasticsearch:latest
