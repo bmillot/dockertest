@@ -1,82 +1,59 @@
 version: '2'
 services:
-  etna:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/Dockerfile
-    ports:
-      - "8081:8081"
-    links:
-      - etna_mysql
-      - redis
-      - elasticsearch
-      - jackrabbit
-      - mary
-      - rabbitmq
-    extra_hosts:
-      - "dam.20minutes.fr:95.131.141.148"
-      - "2.horby.20mn.net:95.131.141.148"
+ etna:
+   image: '848510910118.dkr.ecr.eu-west-1.amazonaws.com/etna:demo-0'
+   ports:
+     - "8081:8081"
+   volumes:
+     - ./vhosts:/vhosts
+     - ./commands:/commands
+   links:
+     - etna_mysql
+     - redis
+     - elasticsearch
+     - jackrabbit
+     - mary
+   command: ["bash", "/vhosts/vhost.sh", "etna", "8081"]
 
-  etna_mysql:
-    image: mysql
-    environment:
-      - "MYSQL_ROOT_PASSWORD=root"
-      - "MYSQL_DATABASE=20mn"
-      - "MYSQL_USER=root"
-      - "MYSQL_PASSWORD=root"
-    ports:
-      - "3307:3306"
+ etna_mysql:
+   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/mysql:latest
+   environment:
+     - "MYSQL_ROOT_PASSWORD=root"
+     - "MYSQL_DATABASE=20mn"
+     - "MYSQL_USER=root"
+     - "MYSQL_PASSWORD=root"
+   ports:
+     - "3306:3306"
+   volumes:
+     - /mnt/ebs-datastore/etna_mysql:/var/lib/mysql
 
-  redis:
-    image: redis
-    ports:
-      - "6379:6379"
+ redis:
+   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/redis:latest
+   ports:
+     - "6379:6379"
 
-  elasticsearch:
-    image: elasticsearch:1.7
-    ports:
-      - "9200:9200"
+ elasticsearch:
+   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/elasticsearch:1.7
+   volumes:
+     - /mnt/ebs-datastore/elasticsearch:/usr/share/elasticsearch/data
+   ports:
+     - "9200:9200"
 
-  jackrabbit:
-    image: rootlogin/jackrabbit
-    ports:
-        - "8080:8080"
+ jackrabbit:
+   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/jackrabbit:latest
+   ports:
+       - "8080:8080"
+   volumes:
+     - /mnt/ebs-datastore/jackrabbit:/app/jackrabbit
 
-  mary:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/Dockerfile
-    expose:
-      - "8082"
-    ports:
-      - "8082:8082"
-    links:
-      - redis
-    extra_hosts:
-      - "dam.20minutes.fr:95.131.141.148"
-      - "2.horby.20mn.net:95.131.141.148"
-
-  fuji:
-    build:
-      context: .
-      dockerfile: ./dockerfiles/Dockerfile
-    expose:
-      - "8083"
-    ports:
-      - "8083:8083"
-    links:
-      - elasticsearch
-      - redis
-      - mary
-    extra_hosts:
-      - "2.horby.20mn.net:95.131.141.148"
-    command: ["bash", "/vhosts/vhost.sh", "fuji", "8083"]
-
-  rabbitmq:
-    image: rabbitmq
-    ports:
-      - "5672:5672"
-    environment:
-      - "RABBITMQ_DEFAULT_USER=admin"
-      - "RABBITMQ_DEFAULT_PASS=admin"
-
+ mary:
+   image: '848510910118.dkr.ecr.eu-west-1.amazonaws.com/mary:demo-0'
+   expose:
+     - "8082"
+   ports:
+     - "8082:8082"
+   volumes:
+     - ./vhosts:/vhosts
+   links:
+     - redis
+   command: ["bash", "/vhosts/vhost.sh", "mary", "8082"]
