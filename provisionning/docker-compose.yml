@@ -5,8 +5,7 @@ services:
    ports:
      - "8081:8081"
    volumes:
-     - ./vhosts:/vhosts
-     - ./commands:/commands
+     - /tmp/vhosts:/vhosts
    links:
      - etna_mysql
      - redis
@@ -40,7 +39,7 @@ services:
      - "9200:9200"
 
  jackrabbit:
-   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/jackrabbit:latest
+   image: 848510910118.dkr.ecr.eu-west-1.amazonaws.com/jackrabbit:fix
    ports:
        - "8080:8080"
    volumes:
@@ -53,7 +52,7 @@ services:
    ports:
      - "8082:8082"
    volumes:
-     - ./vhosts:/vhosts
+     - /tmp/vhosts:/vhosts
    links:
      - redis
    command: ["bash", "/vhosts/vhost.sh", "mary", "8082"]
