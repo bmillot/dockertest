@@ -13,3 +13,7 @@ docker run --name elasticsearch-01c --link elasticsearch-01a:node01 -d -p 9202:9
 docker run --name elasticsearch-01a -d -p 9200:9200 bmillot/elasticsearch /usr/share/elasticsearch/bin/elasticsearch -Des.cluster.name=20mn.local.search -Des.node.name=20mn.local.search-01a
 docker run --name elasticsearch-01b --link elasticsearch-01a:node01 -d bmillot/elasticsearch /usr/share/elasticsearch/bin/elasticsearch -Des.cluster.name=20mn.local.search -Des.node.name=20mn.local.search-01b -Des.discovery.zen.ping.unicast.hosts=node01
 docker run --name elasticsearch-01c --link elasticsearch-01a:node01 -d bmillot/elasticsearch /usr/share/elasticsearch/bin/elasticsearch -Des.cluster.name=20mn.local.search -Des.node.name=20mn.local.search-01c -Des.discovery.zen.ping.unicast.hosts=node01
+
+docker run --name elasticsearch-01a -d -p 9200:9200 -e CLUSTER_NAME=20mn.local.search -e NODE_NAME=20mn.local.search-01a bmillot/elasticsearch
+docker run --name elasticsearch-01b --link elasticsearch-01a:node01 -d -p 9201:9200 -e CLUSTER_NAME=20mn.local.search -e NODE_NAME=20mn.local.search-01b -e UNICAST_HOSTS=node01 bmillot/elasticsearch
+docker run --name elasticsearch-01c --link elasticsearch-01a:node01 -d -p 9202:9200 -e CLUSTER_NAME=20mn.local.search -e NODE_NAME=20mn.local.search-01c -e UNICAST_HOSTS=node01 bmillot/elasticsearch
