@@ -13,8 +13,8 @@ RUN apt-get update \
 RUN /usr/share/elasticsearch/bin/plugin install mobz/elasticsearch-head \
     && /usr/share/elasticsearch/bin/plugin install lmenezes/elasticsearch-kopf/1.0
 
-COPY start.sh /start.sh
-RUN chmod 777 /start.sh
+COPY ["./start.sh", "/start.sh"]
+RUN chmod 744 /start.sh
 
 EXPOSE 9200 9300
 
