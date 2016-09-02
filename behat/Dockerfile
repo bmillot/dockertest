@@ -19,8 +19,11 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q \
     php-redis \
     php-xml
 
+ENV DISPLAY=:99.0 _JAVA_OPTIONS="-Xms2048m -Xmx2048m"
+
 # Set php.ini
 RUN sed -i 's/;date.timezone =/date.timezone = "Europe\/Paris"/g' /etc/php/7.0/cli/php.ini
+RUN echo "127.0.0.1 assets-m.20mn.fr" >> /etc/hosts
 
 COPY ["./start.sh", "/start.sh"]
 RUN chmod 744 /start.sh
